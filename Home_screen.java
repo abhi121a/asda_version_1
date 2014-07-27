@@ -6,6 +6,7 @@ package asda_version_1;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 	import jxl.Workbook;
 import jxl.Sheet;
@@ -31,7 +32,42 @@ public class Home_screen {
 	public int count=0;
 	List<String> cinlist1 = new ArrayList<String>();
 	
-
+	{
+		try {System.out.println("EXL FILE OUTPUT");
+		File myexcel = new File("data.xls");
+		Workbook wbk;
+		
+			wbk = Workbook.getWorkbook(myexcel);
+				Sheet sh=wbk.getSheet(0);
+		int cols=sh.getColumns();
+	 	int rows=sh.getRows();
+	 	System.out.println(cols);
+	 	System.out.println(rows);
+	 	Cell un = sh.getCell(0,1);
+	 	System.out.println(un.getContents());
+	 	username=un.getContents();
+	 	Cell pw = sh.getCell(1,1);
+	 	System.out.println(pw.getContents());
+	 	pwd=pw.getContents();
+	 	count=0;
+	 	for(int row=4;row<=6;row++)
+	 	{
+	 		Cell productid=sh.getCell(2,row);
+	 		//System.out.println(productid.getContents());
+	 		cinlist1.add(productid.getContents());
+	 		
+	 		System.out.println("Product cin no. added to array at"+count+ "index is"+ cinlist1.get(count));
+	 //System.out.println(cinlist1.get(0));
+	 		
+	 count++;
+	 		}
+		} catch (BiffException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+				e.printStackTrace();
+		} 	
+	 		
+	}
 	//constructor
 	Home_screen(WebDriver driver){
 		this.driver=driver;
@@ -41,12 +77,16 @@ public class Home_screen {
 	public void homepage_title_check(){
 		String a = driver.getTitle();
 		System.out.println(a);
-		Assert.assertEquals(a,"Online Food Shopping - ASDA Groceries");
-		String b = driver.getCurrentUrl();
-		System.out.println(b);
-		Assert.assertEquals("http://groceries.asda.com/asda-webstore/landing/home.shtml", driver.getCurrentUrl());
+		Assert.assertEquals("Online Food Shopping - ASDA Groceries",a);
 	}
-	
+		
+public void homepage_path_check()
+{		String b = driver.getCurrentUrl();
+		System.out.println(b);
+		Assert.assertEquals("http://groceries.asda.com/asda-webstore/landing/home.shtml#", driver.getCurrentUrl());
+	}
+
+
 		public void logo_click(){
 		//navigate to any random page
 		driver.findElement(By.xpath("//img [@width='203' and @height='74' and @src='//i3-groceries.asda.com/theme/img/modules/home_page/logo-asda.png']")).click();
@@ -79,8 +119,8 @@ public class Home_screen {
 	
 	public void sign_in_popup(){
 		driver.findElement(By.xpath("//a[@ id ='sign-in-button-accessible' and  contains(text(),'Sign in')]")).click();
-		wait_command(5000);
 		driver.switchTo().frame("login");
+		implicit_wait_command(30);
 		//Assert.assertEquals("Please sign in.",driver.findElement(By.xpath("//Strong [contains(text(),'Please sign in.')]")).getText());
 		//String a=driver.findElement(By.xpath("//label [@for='username']/text()[4]")).getText();
 		//System.out.println(a);
@@ -89,15 +129,14 @@ public class Home_screen {
 		Assert.assertEquals("Password",driver.findElement(By.xpath("//label [@for='password' and contains(text(),'Password')]")).getText());
 		driver.findElement(By.xpath("//*[@id='password']")).sendKeys(pwd);
 		driver.findElement(By.xpath("//*[@id='btn-signIn-accessible']")).click();
-		wait_command(5000);
+		implicit_wait_command(30);
 		driver.switchTo().defaultContent();
-		wait_command(5000);
-		//String a = driver.findElement(By.xpath("//h2 [@style='background-color: transparent;' and contains(text(),'Welcome back')]")).getText();
+			//String a = driver.findElement(By.xpath("//h2 [@style='background-color: transparent;' and contains(text(),'Welcome back')]")).getText();
 		//System.out.println(a);
 	}
 	public void sign_in_popup(String pcode,String uname,String password){
 		driver.findElement(By.xpath("//a[@ id ='sign-in-button-accessible' and  contains(text(),'Sign in')]")).click();
-		wait_command(5000);
+		implicit_wait_command(30);
 		driver.switchTo().frame("login");
 		//Assert.assertEquals("Please sign in.",driver.findElement(By.xpath("//Strong [contains(text(),'Please sign in.')]")).getText());
 		//String a=driver.findElement(By.xpath("//label [@for='username']/text()[4]")).getText();
@@ -107,11 +146,11 @@ public class Home_screen {
 		Assert.assertEquals("Password",driver.findElement(By.xpath("//label [@for='password' and contains(text(),'Password')]")).getText());
 		driver.findElement(By.xpath("//*[@id='password']")).sendKeys(password);
 		driver.findElement(By.xpath("//*[@id='btn-signIn-accessible']")).click();
-		wait_command(5000);
+		implicit_wait_command(30);
 		driver.switchTo().defaultContent();
 		//String a = driver.findElement(By.xpath("//h2 [@style='background-color: transparent;' and contains(text(),'Welcome back')]")).getText();
 		//System.out.println(a);
-		wait_command(5000);
+		implicit_wait_command(30);
 		
 	}
 	public void login_check_homepage(){
@@ -124,34 +163,8 @@ public class Home_screen {
 	
 	}
 	public void data_driven_thru_excel() throws BiffException, IOException{
-		System.out.println("EXL FILE OUTPUT");
-		File myexcel = new File("data.xls");
-		Workbook wbk= Workbook.getWorkbook(myexcel);
-		Sheet sh=wbk.getSheet(0);
-		int cols=sh.getColumns();
-	 	int rows=sh.getRows();
-	 	System.out.println(cols);
-	 	System.out.println(rows);
-	 	Cell un = sh.getCell(0,1);
-	 	System.out.println(un.getContents());
-	 	username=un.getContents();
-	 	Cell pw = sh.getCell(1,1);
-	 	System.out.println(pw.getContents());
-	 	pwd=pw.getContents();
-	 	count=0;
-	 	for(int row=4;row<=6;row++)
-	 	{
-	 		Cell productid=sh.getCell(2,row);
-	 		//System.out.println(productid.getContents());
-	 		cinlist1.add(productid.getContents());
-	 		
-	 		System.out.println("Product cin no. added to array at"+count+ "index is"+ cinlist1.get(count));
-	 //System.out.println(cinlist1.get(0));
-	 		
-	 count++;
-	 		}
-	 		
-	 	
+		
+	}
 	 	
 	/*	for(int row=0;row<rows;row++)
 		{
@@ -163,14 +176,13 @@ public class Home_screen {
 				
 			}
 		}*/
-	}
 	
 	/*public void login(String postcode, String user, String pwd) 
 	{
 	driver.findElement(By.xpath("//a[contains(text(),'Register')]")).click();
 	post_code_screen(postcode);
 	driver.findElement(By.xpath("//a[@ id ='sign-in-button-accessible' and  contains(text(),'Sign in')]")).click();
-	wait_command(5000);
+	implicit_wait_command(30);
 	driver.switchTo().frame("login");
 	WebElement log = 
 	log.click();
@@ -182,27 +194,28 @@ public class Home_screen {
 	System.out.println("login Successful waiting for 1min");
 
 	}*/
-	public void logout(WebDriver driver) {
+	public void logout() {
 	driver.findElement(By.xpath("//*[@id='sign-in-button-arrow']")).click();
 	driver.switchTo().frame("login");
 	driver.findElement(By.xpath("//input [@id='reChkBox']")).click();
 	driver.findElement(By.xpath("//input [@ class='button button-pri signout-btn'and @type='submit']")).click();
 	// driver.switchTo().defaultContent();
-	wait_command(5000);
+	implicit_wait_command(30);
 	String handles = driver.getWindowHandle();
 	System.out.println(handles);
 	driver.switchTo().window(handles);
 	driver.findElement(By.id("confirmSignOut")).click();
 	System.out.println("logout Successful");
+	explicit_wait_command(1000);
 	}
 	public void registration(WebDriver driver) {
 	driver.get("http://groceries.asda.com");
 	System.out.println("Register to Groceries");
 	driver.findElement(By.xpath("//a[contains(text(),'Register')]")).click();
-	wait_command(5000);
+	implicit_wait_command(30);
 	driver.findElement(By.xpath("//input [@id = 'postcode' and @type='text']")).sendKeys("dn211nz");
 	driver.findElement(By.xpath("//input [@type='submit' and @value='Continue']")).click();
-	wait_command(5000);
+	implicit_wait_command(30);
 	driver.findElement(By.xpath("//*[@id='formFname']")).sendKeys("Abhishek");
 	driver.findElement(By.xpath("//*[@id='formLname']")).sendKeys("verma");
 	driver.findElement(By.xpath("//*[@id='formEmail']")).sendKeys(username);
@@ -246,26 +259,32 @@ public void sending_cin_and_adding_to_trolley(){
 		driver.findElement(By.xpath("//input [@id='search']")).sendKeys(cinlist1.get(i));
 		driver.findElement(By.xpath("//a [@id='search-submitbox-wrapper']")).click();
 		System.out.println(cinlist1.get(i)+"is added for-"+ username);
-		wait_command(5000);
+		
 		driver.findElement(By.xpath("//* [@onclick='return false;' and contains(text(),'Add')]")).click();
+		implicit_wait_command(30);
 		System.out.println(cinlist1.get(i)+"-added successfully");
-		wait_command(5000);
+		implicit_wait_command(30);
 	}
 
 }
 
 
 public void add_product_to_trolley(){
-	WebElement wait_obj = (new WebDriverWait(driver,10).until(ExpectedConditions.elementToBeClickable(By.xpath("//* [@onclick='return false;' and contains(text(),'Add')]"))));
+	//WebElement wait_obj = (new WebDriverWait(driver,10).until(ExpectedConditions.elementToBeClickable(By.xpath("//* [@onclick='return false;' and contains(text(),'Add')]"))));
 	driver.findElement(By.xpath("//* [@onclick='return false;' and contains(text(),'Add')]")).click();
 	//adding the first element present on the screen with add item botton on it.
 }
 
-	public void wait_command(int time) {
+	public void explicit_wait_command(int time) {
 	try {
 	Thread.sleep(time);
 	} catch (Exception e) {
 	}
+	}
+	
+	public void implicit_wait_command(int time)
+	{
+		driver.manage().timeouts().implicitlyWait(time, TimeUnit.SECONDS);
 	}
 
 	public void clear_array() {
@@ -276,11 +295,33 @@ public void add_product_to_trolley(){
 	public void remove_product_from_trolley(){
 		driver.findElement(By.xpath("//input [@id='search']")).sendKeys("coke");
 		driver.findElement(By.xpath("//a [@id='search-submitbox-wrapper']")).click();
-		wait_command(10000);
+		implicit_wait_command(10000);
 		driver.findElement(By.xpath("//a [@class='EmptyTrolley' and contains(text(),'Empty trolley')]")).click();
-	wait_command(5000);
+	implicit_wait_command(30);
 	}
 	
+	//find the count of element with similar xpaths
+	int xpath_counts(String stxp){
+		int a = driver.findElements(By.xpath(stxp)).size();
+		return a;
+	}
+	//function to click all the categories and add elements to trolley
+	public void categories_click(){
+		String a ="//*[@id='primary-nav-items']/li";
+		for(int i=1;i<=xpath_counts(a);i++)
+		{
+		driver.findElement(By.xpath("//*[@id='primary-nav-items']/li["+i+"]/a")).click();
+		implicit_wait_command(30);
+		add_product_to_trolley();
+		}
+	}
+	
+	
+	
+	
+	public void checkout_button(){
+		//driver.findElement(by.xpath("//a"))
+	}
 
 	}
 

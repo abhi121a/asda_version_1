@@ -30,56 +30,68 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 	
 @BeforeClass
 	public static void setup(){
-		obj = new FirefoxDriver();
-		ob = new Home_screen(obj);
-				
+	obj = new FirefoxDriver();
+	ob = new Home_screen(obj);
+	obj.manage().window().maximize();	
 	}
 @Before
 	public void step_up_before(){
-	obj.get("http://groceries.asda.com/");
-	obj.manage().window().maximize();	
+	obj.get("http://groceries.asda.com/");	
 	}
-//@After
-//	public void end_clean(){
-//	ob.clear_array();}
+@After
+public void after_every(){
+	//obj.close();
+}
+
+@AfterClass
+	public static void end_clean(){
+	obj.close();
+	
+}
 
 
 //TC_01 Test case to check that the website_is_opening		
-	@Ignore
+	//@Ignore
 	@Test
 	public void Siteisopeningtest(){
 	ob.homepage_title_check();
 	}
 	
 //TC_02 Test case to check logo is present and it navigates to homepage	
-	@Ignore	
+	//@Ignore	
 	@Test
 	public void check_logo_present_and_navigate_to_homepage()
 	{
 	ob.check_offerpage();
 	ob.logo_click();
 	ob.homepage_title_check();
+	ob.homepage_path_check();
 	}
 	
 //TC_03 Validate Sign in popup elements
-	@Ignore
+	//@Ignore
 	@Test
 	public void sign_in_popup_test()
 	{
 		ob.sign_in_popup();
+		WebElement a = obj.findElement(By.xpath("//a [contains(text(),'Your Account')]"));
+		String str = a.getText();
+		Assert.assertEquals(str,"Your Account");
+		ob.logout();
+		
 	}
 	
-@Ignore
+/*@Ignore
 	@Test
 	public void logininwithvaliduser(){
 //	ob.login("dn211nz","alok.sharma@qa.com","alok123");
-	ob.wait_command(10000);
+	ob.explicit_wait_command(10000);
 	WebElement a = obj.findElement(By.xpath("//a [contains(text(),'Your Account')]"));
 	String str = a.getText();
 	Assert.assertEquals(str,"Your Account");
 	ob.logout(obj);
-	ob.wait_command(10000);
-	}
+	ob.explicit_wait_command(10000);
+	}*/
 	
 	
 	@Ignore
@@ -90,15 +102,14 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 	}
 	
 //Placing an order by searching item by its cin id 		
-@Ignore
+//@Ignore
 @Test
 public void placing_single_order() throws BiffException, IOException{
-	ob.data_driven_thru_excel();
-	ob.sign_in_popup();//("dn211nz","alok.sharma@qa.com","alok123");
-	//ob.login_check_homepage();
-	
-}
-@Ignore
+	ob.sign_in_popup();
+		ob.sending_cin_and_adding_to_trolley();
+	ob.logout();
+	}
+//@Ignore
 @Test
 	public void searching_an_item()
 	{String textpresent = ob.search_functionality(obj,"coke");
@@ -108,21 +119,18 @@ public void placing_single_order() throws BiffException, IOException{
 	Assert.assertEquals(obj.findElement(By.xpath("//* [@onclick='return false;' and contains(text(),'Add')]")).getText(),"Add");
 	
 	}
+@Ignore
 @Test
 	public void add_item_from_special_offer_page() throws BiffException, IOException
 	{ob.data_driven_thru_excel();
 	ob.sign_in_popup();
 	ob.logo_click_on();
-	ob.remove_product_from_trolley();
+	//ob.remove_product_from_trolley();
 	ob.sending_cin_and_adding_to_trolley();
 	
-	ob.wait_command(5000);
+	ob.explicit_wait_command(5000);
 		}
+	}
 
 
-	@AfterClass
-	public static void after(){
-	obj.quit();
-	}
-	}
 	
